@@ -2,6 +2,7 @@ package Manager.TeatroManager.entity;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -27,7 +28,7 @@ public class Obra {
     private String nome;
 
     @Column(name="data_da_obra",columnDefinition="")
-    private LocalDate dataAssistida;
+    private LocalDateTime dataAssistida;
 
     @Column(name="local_da_obra")
     private String local;
