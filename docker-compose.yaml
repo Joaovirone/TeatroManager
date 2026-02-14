@@ -1,1 +1,16 @@
-services: {}
+version: '3.8'
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: postgres-teatro
+    environment:
+      POSTGRES_USER: teatromanager
+      POSTGRES_PASSWORD: rootroot
+      POSTGRES_DB: teatroManager
+    ports:
+      - "5001:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
