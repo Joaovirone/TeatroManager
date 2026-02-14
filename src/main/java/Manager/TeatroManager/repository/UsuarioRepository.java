@@ -10,6 +10,6 @@ import Manager.TeatroManager.entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     
-    List<Usuario> findUsuarioByUsername(String username);
+    Optional<Usuario> findUsuarioByUsername(String username);
 
 }
