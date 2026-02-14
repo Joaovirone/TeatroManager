@@ -46,7 +46,7 @@ public class ObraController {
 
     }
     
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<ObraResponseDTO>> listarTodasObras() {
      
         List<Obra> obras = service.buscarTodasAsObras();
