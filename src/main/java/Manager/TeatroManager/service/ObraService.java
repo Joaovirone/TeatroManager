@@ -38,7 +38,7 @@ public class ObraService {
     @Transactional(readOnly = true)
     public List<Obra> buscarObraPorNome (String nome){
         
-      List<Obra> obras = repository.findByNomeContainigIgnoreCase(nome);
+      List<Obra> obras = repository.findByNomeContainingIgnoreCase(nome);
 
       if(obras.isEmpty()){
         throw new EntityNotFoundException(
@@ -50,7 +50,7 @@ public class ObraService {
 
     @Transactional(readOnly = true)
     public Obra buscarObraPorData(LocalDateTime data){
-      return repository.findObraByDate(data).
+      return repository.findObraByData(data).
             orElseThrow(()-> new RuntimeException("A data da obra | %s | -- Não está registrada no banco de dados"));
 
  
@@ -59,7 +59,7 @@ public class ObraService {
     @Transactional(readOnly = true)
     public List<Obra> buscarObraPorNomeDoDiretor (String nome){
         
-      List<Obra> diretor = repository.findObraByNomeDiretor(nome);
+      List<Obra> diretor = repository.findByDiretorContainingIgnoreCase(nome);
 
       if(diretor.isEmpty()){
         throw new EntityNotFoundException(
@@ -78,10 +78,6 @@ public class ObraService {
     }
 
 
-    public Obra buscarTodasAsObras(ObraResponseDTO obraDTO) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'buscarTodasAsObras'");
-    }
 
 
 }
