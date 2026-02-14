@@ -10,7 +10,7 @@ public interface ObraRepository extends JpaRepository<Obra, Long> {
     
     List<Obra> findByNomeContainigIgnoreCase(String nome);
 
-    List<Obra> findObraByDate(LocalDate dataAssistida);
+    Optional<Obra> findObraByDate(LocalDateTime dataAssistida);
 
     List<Obra> findObraByNomeDiretor(String diretor);
 
