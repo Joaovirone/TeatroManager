@@ -1,41 +1,33 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: TeatroManager
-  flyway: 
-    enabled: false
-
-
+  
   datasource:
-    url: jdbc:postgresql://localhost:5001/teatroManager
+    url: jdbc:postgresql://db:5432/teatroManager
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
-  
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:5002
 
+  # REMOVA ou COMENTE a seção spring.security.oauth2 se ela estiver assim:
+  # security:
+  #   oauth2:
+  #     resourceserver:
+  #       jwt: <--- O erro acontece aqui se estiver vazio ou mal formatado
 
   jpa:
     hibernate:
-
       ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        # Removi o dialect conforme o aviso (WARN) do seu log
+    open-in-view: false
+
+jwt:
+  secret: ${JWT_SECRET}
+
 server:
   port: 5002
-
-springdoc:
-  swagger-api:
-    path: /swagger-ui.html
-  api-docs:
-    path: /v3/api-docs
-
-loggin:
-  level:
-    org.springframework.security: DEBUG
