@@ -28,7 +28,15 @@ export default function AuthScreen() {
 
       if (response.ok) {
         const data = await response.text();
-        localStorage.setItem('userToken', data);
+        
+        // --- LIMPEZA CRÍTICA ---
+        localStorage.clear(); // Remove tokens antigos de sessões que deram erro
+        
+        // Remove aspas se o backend retornou algo como "token_aqui"
+        const cleanToken = data.replace(/^"|"$/g, '').trim(); 
+        localStorage.setItem('userToken', cleanToken);
+        // -----------------------
+
         Alert.alert('Sucesso', isLogin ? 'Bem-vindo de volta!' : 'Conta criada com sucesso!');
         router.replace('/obras');
       } else {
