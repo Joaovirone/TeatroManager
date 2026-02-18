@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
+import Feedback, { FeedbackType } from '../components/Feedback';
 
 export default function AuthScreen() {
   const router = useRouter();
@@ -8,13 +9,13 @@ export default function AuthScreen() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState<{ message: string; type?: FeedbackType } | null>(null);
 
   const API_BASE = 'http://localhost:5002/api/v1/usuarios';
 
   const handleAuth = async () => {
     if (!email || !senha) {
-      Alert.alert('Atenção', 'Preencha todos os campos para continuar.');
-      return;
+      setFeedback({ message: 'Preencha todos os campos para continuar.', type: 'error' });
     }
 
     setLoading(true);
@@ -29,21 +30,18 @@ export default function AuthScreen() {
       if (response.ok) {
         const data = await response.text();
         
-        // --- LIMPEZA CRÍTICA ---
-        localStorage.clear(); // Remove tokens antigos de sessões que deram erro
-        
-        // Remove aspas se o backend retornou algo como "token_aqui"
+        // limpar storage antes de gravar nova sessão
+        localStorage.clear();
         const cleanToken = data.replace(/^"|"$/g, '').trim(); 
         localStorage.setItem('userToken', cleanToken);
-        // -----------------------
 
-        Alert.alert('Sucesso', isLogin ? 'Bem-vindo de volta!' : 'Conta criada com sucesso!');
-        router.replace('/obras');
+        setFeedback({ message: isLogin ? 'Bem-vindo de volta!' : 'Conta criada com sucesso!', type: 'success' });
+        setTimeout(() => router.replace('/obras'), 500);
       } else {
-        Alert.alert('Erro', 'Credenciais inválidas ou usuário já existe.');
+        setFeedback({ message: 'Credenciais inválidas ou usuário já existe.', type: 'error' });
       }
     } catch (error) {
-      Alert.alert('Erro de Conexão', 'Certifique-se que o backend (5002) está rodando.');
+      setFeedback({ message: 'Erro de conexão, verifique backend.', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -51,6 +49,13 @@ export default function AuthScreen() {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      {feedback && (
+        <Feedback
+          message={feedback.message}
+          type={feedback.type}
+          onHide={() => setFeedback(null)}
+        />
+      )}
       <View style={styles.innerContainer}>
         <View style={styles.header}>
           <Text style={styles.logo}>🎭 Teatro</Text>
@@ -94,24 +99,24 @@ export default function AuthScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF' },
+  container: { flex: 1, backgroundColor: '#F8FAFC' },
   innerContainer: { flex: 1, padding: 30, justifyContent: 'center' },
   header: { marginBottom: 40, alignItems: 'center' },
   logo: { fontSize: 50, marginBottom: 10 },
-  welcome: { fontSize: 28, fontWeight: '800', color: '#333' },
+  welcome: { fontSize: 28, fontWeight: '800', color: '#6366F1' },
   subtitle: { fontSize: 16, color: '#666', marginTop: 5 },
   form: { width: '100%' },
   input: { 
-    backgroundColor: '#F5F5F5', 
+    backgroundColor: '#FFF', 
     padding: 18, 
     borderRadius: 15, 
     marginBottom: 15, 
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#EEE'
+    borderColor: '#DDD'
   },
   mainButton: { 
-    backgroundColor: '#6200EE', 
+    backgroundColor: '#6366F1', 
     padding: 20, 
     borderRadius: 15, 
     alignItems: 'center', 
@@ -123,5 +128,5 @@ const styles = StyleSheet.create({
   },
   mainButtonText: { color: '#FFF', fontWeight: 'bold', fontSize: 18 },
   switchButton: { marginTop: 25, alignItems: 'center' },
-  switchText: { color: '#6200EE', fontWeight: '600', fontSize: 14 }
+  switchText: { color: '#6366F1', fontWeight: '600', fontSize: 14 }
 });
